@@ -1,5 +1,6 @@
 package com.example.idolpick.entity;
 
+import com.example.idolpick.entity.role.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,13 +21,15 @@ public class User {
     private LocalDate birthDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private UserRole role; // Enum
 
     // 회원가입용 생성자
-    public User(String email, String nickname, String phoneNumber, LocalDate birthDate) {
+    public User(String email, String nickname, String phoneNumber, LocalDate birthDate, UserRole role) {
         this.email = email;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
+        this.role = role;
     }
 }
 

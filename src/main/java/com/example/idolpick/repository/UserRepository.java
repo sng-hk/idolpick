@@ -1,6 +1,7 @@
 package com.example.idolpick.repository;
 
 import com.example.idolpick.entity.User;
+import com.example.idolpick.entity.role.UserRole;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -31,7 +32,8 @@ public class UserRepository {
                             rs.getString("phone_number"),
                             rs.getDate("birth_date").toLocalDate(),
                             rs.getTimestamp("created_at").toLocalDateTime(),
-                            rs.getTimestamp("updated_at").toLocalDateTime()
+                            rs.getTimestamp("updated_at").toLocalDateTime(),
+                            UserRole.valueOf(rs.getString("role"))
                     ), email);
             return Optional.ofNullable(user);
         } catch (EmptyResultDataAccessException e) {
@@ -41,7 +43,7 @@ public class UserRepository {
     }
 
         public User save(User user) {
-            String sql = "INSERT INTO user (email, nickname, phone_number, birth_date) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO user (email, nickname, phone_number, birth_datem, role) VALUES (?, ?, ?, ?, ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -51,6 +53,7 @@ public class UserRepository {
                 ps.setString(2, user.getNickname());
                 ps.setString(3, user.getPhoneNumber());
                 ps.setObject(4, user.getBirthDate());
+                ps.setString(5, user.getRole().name());
                 return ps;
             }, keyHolder);
 
@@ -59,14 +62,15 @@ public class UserRepository {
 
             String selectSql = "SELECT id, email, nickname, phone_number, birth_date, created_at, updated_at FROM user WHERE id = ?";
             return jdbcTemplate.queryForObject(selectSql,
-                    (rs, rowNum) -> new User(
+                    (rs, rowNum) -> new User( // @AllArgsConstructor
                             rs.getLong("id"),
                             rs.getString("email"),
                             rs.getString("nickname"),
                             rs.getString("phone_number"),
                             rs.getDate("birth_date").toLocalDate(),
                             rs.getTimestamp("created_at").toLocalDateTime(),
-                            rs.getTimestamp("updated_at").toLocalDateTime()
+                            rs.getTimestamp("updated_at").toLocalDateTime(),
+                            UserRole.valueOf(rs.getString("role"))
                     ), generatedId);
 
         }

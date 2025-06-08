@@ -1,6 +1,7 @@
 package com.example.idolpick.dto;
 
 import com.example.idolpick.entity.User;
+import com.example.idolpick.entity.role.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +28,7 @@ public class SignupRequestDto {
                 .nickname(this.nickname)
                 .phoneNumber(this.phoneNumber)
                 .birthDate(parsedBirthDate)
+                .role(UserRole.ROLE_USER) // TODO: 추후 수정 필요 (ex. role을 requestbody로 받아오는 방식)
                 .build();
     }
 
