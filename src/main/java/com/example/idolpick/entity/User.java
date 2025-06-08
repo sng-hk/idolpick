@@ -5,6 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,10 +17,12 @@ public class User {
     private String email;
     private String nickname;
     private String phoneNumber;
-    private String birthDate;
+    private LocalDate birthDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // 회원가입용 생성자
-    public User(String email, String nickname, String phoneNumber, String birthDate) {
+    public User(String email, String nickname, String phoneNumber, LocalDate birthDate) {
         this.email = email;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
