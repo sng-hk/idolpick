@@ -1,7 +1,9 @@
 package com.example.idolpick.config;
+import com.example.idolpick.repository.UserRepository;
 import com.example.idolpick.security.handler.OAuth2AuthenticationSuccessHandler;
 import com.example.idolpick.security.jwt.JwtAuthenticationFilter;
 import com.example.idolpick.security.jwt.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,9 +29,13 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final ObjectMapper objectMapper;
 
-    public SecurityConfig(JwtUtil jwtUtil) {
+    public SecurityConfig(JwtUtil jwtUtil, UserRepository userRepository, ObjectMapper objectMapper) {
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -45,7 +51,7 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                                 // OAuth2 로그인 성공시 우리가 만든 핸들러 호출
-                                .successHandler(new OAuth2AuthenticationSuccessHandler(jwtUtil))
+                                .successHandler(oAuth2AuthenticationSuccessHandler())
                                  // 필요하면 실패 핸들러도 등록 가능
                 ).exceptionHandling(e -> e
                         .authenticationEntryPoint((request, response, authException) -> {
@@ -57,6 +63,12 @@ public class SecurityConfig {
                 // ✅ JWT 필터 추가!!
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);;
         return http.build();
+    }
+
+
+    @Bean
+    public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
+        return new OAuth2AuthenticationSuccessHandler(jwtUtil, userRepository, objectMapper);
     }
 
     @Bean
