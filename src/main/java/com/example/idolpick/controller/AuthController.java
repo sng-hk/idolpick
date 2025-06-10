@@ -6,6 +6,7 @@ import com.example.idolpick.entity.User;
 import com.example.idolpick.repository.UserRepository;
 import com.example.idolpick.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/user/")
+@RequestMapping("/api/userinfo")
 public class AuthController {
 
     private final UserRepository userRepository;
@@ -40,7 +41,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/info")
+    @GetMapping
     public ResponseEntity<?> user(Authentication authentication) {
         if (authentication != null) {
             Map<String, Object> principal = (Map<String, Object>) authentication.getPrincipal();

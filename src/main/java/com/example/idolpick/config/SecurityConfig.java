@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/api/home", "/api/signup").permitAll()
+                        .requestMatchers("/auth/**", "/api/home", "/api/userinfo/**").permitAll()
                         // .hasRole("MD") : 내부적으로 ROLE_MD로 자동으로 변환
                         .requestMatchers("/api/md/**").hasAuthority("ROLE_MD") // 문자열 그대로 비교
                         .requestMatchers("/api/user/**").hasAuthority("ROLE_USER")
