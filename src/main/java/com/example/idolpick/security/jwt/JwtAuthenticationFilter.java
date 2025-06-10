@@ -1,5 +1,6 @@
 package com.example.idolpick.security.jwt;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,22 +33,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            Map<String, Object> claims = jwtUtil.validateToken(token);
+            Claims claims = jwtUtil.validateToken(token);
 
             if (claims != null) {
-                String email = (String) claims.get("email");
-                String nickname = (String) claims.get("nickname");
-
+                String email = claims.getSubject();
+                String role = (String) claims.get("role");
                 Map<String, Object> principal = new HashMap<>();
                 principal.put("email", email);
-                principal.put("nickname", nickname);
+                principal.put("role", role);
 
                 // 인증 객체 생성
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 principal,
                                 null,
-                                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
+                                Collections.singleton(new SimpleGrantedAuthority(role))
                         );
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {

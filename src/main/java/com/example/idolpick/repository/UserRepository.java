@@ -22,7 +22,7 @@ public class UserRepository {
 
     public Optional<User> findByEmail(String email) {
         // 이메일이 없는 경우가 자연스럽기 때문에 try catch로 감싸서 처리
-        String sql = "SELECT id, email, nickname, phone_number, birth_date, created_at, updated_at FROM user WHERE email = ?";
+        String sql = "SELECT id, email, nickname, phone_number, birth_date, created_at, updated_at, role FROM user WHERE email = ?";
         try {
             User user = jdbcTemplate.queryForObject(sql,
                     (rs, rowNum) -> new User(
@@ -43,7 +43,7 @@ public class UserRepository {
     }
 
         public User save(User user) {
-            String sql = "INSERT INTO user (email, nickname, phone_number, birth_datem, role) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO user (email, nickname, phone_number, birth_date, role) VALUES (?, ?, ?, ?, ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -60,7 +60,7 @@ public class UserRepository {
 
             Long generatedId = keyHolder.getKey().longValue();
 
-            String selectSql = "SELECT id, email, nickname, phone_number, birth_date, created_at, updated_at FROM user WHERE id = ?";
+            String selectSql = "SELECT id, email, nickname, phone_number, birth_date, created_at, updated_at, role FROM user WHERE id = ?";
             return jdbcTemplate.queryForObject(selectSql,
                     (rs, rowNum) -> new User( // @AllArgsConstructor
                             rs.getLong("id"),

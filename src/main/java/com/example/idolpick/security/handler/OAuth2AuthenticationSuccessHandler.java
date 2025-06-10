@@ -21,12 +21,10 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final JwtUtil jwtUtil; // JWT 생성 클래스
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
 
-    public OAuth2AuthenticationSuccessHandler(JwtUtil jwtUtil, UserRepository userRepository, ObjectMapper objectMapper) {
+    public OAuth2AuthenticationSuccessHandler(JwtUtil jwtUtil, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -41,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         if (userOptional.isPresent()) {
             // 기존 회원이면 JWT 생성
-            String token = jwtUtil.generateToken(email, nickname);
+            String token = jwtUtil.generateToken(email, userOptional.get().getRole().name());
             // 토큰을 쿼리 파라미터로 붙여서 프론트 메인 페이지로 리다이렉트
             redirectURL = "http://localhost:3000/oauth/callback?token=" + token + "&isNew=false";
         } else {

@@ -47,6 +47,8 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**", "/api/home", "/api/signup").permitAll()
+                        // .hasRole("MD") : 내부적으로 ROLE_MD로 자동으로 변환
+                        .requestMatchers("/api/md/**").hasAuthority("ROLE_MD") // 문자열 그대로 비교
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -68,7 +70,7 @@ public class SecurityConfig {
 
     @Bean
     public OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler() {
-        return new OAuth2AuthenticationSuccessHandler(jwtUtil, userRepository, objectMapper);
+        return new OAuth2AuthenticationSuccessHandler(jwtUtil, userRepository);
     }
 
     @Bean

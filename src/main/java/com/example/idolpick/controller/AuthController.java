@@ -1,24 +1,22 @@
 package com.example.idolpick.controller;
 
 import com.example.idolpick.dto.SignupRequestDto;
+import com.example.idolpick.dto.UserInfoResponseDto;
+import com.example.idolpick.entity.User;
 import com.example.idolpick.repository.UserRepository;
 import com.example.idolpick.security.jwt.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
-public class RegisterController {
+@RequestMapping("/api/user/")
+public class AuthController {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -29,7 +27,7 @@ public class RegisterController {
             userRepository.save(request.toEntity());
 
             // 회원가입 성공 → 토큰 발급
-            String token = jwtUtil.generateToken(request.getEmail(), request.getNickname());
+            String token = jwtUtil.generateToken(request.getEmail(), request.getRole());
 
             return ResponseEntity.ok(Map.of("token", token));
         } catch (IllegalArgumentException e) {
@@ -40,5 +38,16 @@ public class RegisterController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "회원가입 처리 중 오류가 발생했습니다."));
         }
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> user(Authentication authentication) {
+        if (authentication != null) {
+            Map<String, Object> principal = (Map<String, Object>) authentication.getPrincipal();
+            String email = (String) principal.get("email");
+            User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+            return ResponseEntity.ok(new UserInfoResponseDto(user));
+        }
+        return ResponseEntity.badRequest().body(Map.of("message", "회원 정보를 찾을 수 없습니다."));
     }
 }

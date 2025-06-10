@@ -10,6 +10,16 @@ CREATE TABLE user (
                       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE idol (
+                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                      name VARCHAR(255) NOT NULL,
+                      description VARCHAR(255),
+                      image_url VARCHAR(255),
+                      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
 CREATE TABLE idol_like (
                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
                    user_id BIGINT NOT NULL,
@@ -20,20 +30,15 @@ CREATE TABLE idol_like (
 );
 
 
-CREATE TABLE idol (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description VARCHAR(255),
-    image_url VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-
 CREATE TABLE category (
                           id BIGINT AUTO_INCREMENT PRIMARY KEY,
                           name VARCHAR(50) NOT NULL
 );
+INSERT INTO category (name) VALUES ('의류');
+INSERT INTO category (name) VALUES ('포토카드');
+INSERT INTO category (name) VALUES ('응원봉');
+INSERT INTO category (name) VALUES ('키링');
+
 
 
 CREATE TABLE product (
@@ -52,6 +57,12 @@ CREATE TABLE product (
                          FOREIGN KEY (category_id) REFERENCES category(id),
                          FOREIGN KEY (created_by) REFERENCES user(id)
 );
+INSERT INTO product (name, category_id, price, stock, description, thumbnail_url, view_count, available_from, created_by)
+VALUES
+    ('핑핑이 피규어', 1, 25000, 100, '핑핑이 한정판 피규어입니다.', 'https://example.com/image1.jpg', 12, '2025-06-01 10:00:00', 5),
+    ('핑핑이 반팔티', 2, 32000, 50, '여름용 핑핑이 반팔티셔츠', 'https://example.com/image2.jpg', 4, '2025-06-03 14:00:00', 6),
+    ('핑핑이 포토카드 세트', 3, 7000, 200, '10장 구성의 포토카드 세트', 'https://example.com/image3.jpg', 27, '2025-06-05 09:00:00', 14),
+    ('핑핑이 키링', 4, 12000, 80, '가방에 달 수 있는 귀여운 키링', 'https://example.com/image4.jpg', 8, '2025-06-07 11:00:00', 14);
 
 
 

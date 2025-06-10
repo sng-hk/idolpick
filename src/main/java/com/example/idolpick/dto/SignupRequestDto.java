@@ -14,6 +14,7 @@ public class SignupRequestDto {
     private String nickname;
     private String birthDate;
     private String phoneNumber;
+    private String role;
 
     public User toEntity() {
         LocalDate parsedBirthDate;
@@ -28,7 +29,7 @@ public class SignupRequestDto {
                 .nickname(this.nickname)
                 .phoneNumber(this.phoneNumber)
                 .birthDate(parsedBirthDate)
-                .role(UserRole.ROLE_USER) // TODO: 추후 수정 필요 (ex. role을 requestbody로 받아오는 방식)
+                .role(UserRole.valueOf(this.role))
                 .build();
     }
 

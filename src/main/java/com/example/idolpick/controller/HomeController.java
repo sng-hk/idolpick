@@ -17,15 +17,12 @@ public class HomeController {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new RuntimeException("인증된 사용자가 아닙니다.");
         }
-
         Map<String, String> userInfo = (Map<String, String>) authentication.getPrincipal();
 
-        String email = userInfo.get("email");
         String nickname = userInfo.get("nickname");
 
         return Map.of(
                 "message", "🎉 인증된 사용자입니다!",
-                "email", email,
                 "nickname", nickname
         );
     }

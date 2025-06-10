@@ -17,17 +17,17 @@ public class JwtUtil {
     private static final String SECRET = "my-super-secret-key-that-is-at-least-32-characters"; // 32자 이상!
     private static final Key SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
 
-    public static String generateToken(String email, String nickname) {
+    public static String generateToken(String email, String role) {
         return Jwts.builder()
-                .claim("email", email)
-                .claim("nickname", nickname)
+                .setSubject(email)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 1일 유효
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Map<String, Object> validateToken(String token) {
+    public Claims validateToken(String token) {
         try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)
