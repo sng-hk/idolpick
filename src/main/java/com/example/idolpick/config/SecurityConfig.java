@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**", "/api/home", "/api/signup").permitAll()
                         // .hasRole("MD") : 내부적으로 ROLE_MD로 자동으로 변환
                         .requestMatchers("/api/md/**").hasAuthority("ROLE_MD") // 문자열 그대로 비교
+                        .requestMatchers("/api/user/**").hasAuthority("ROLE_USER")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
