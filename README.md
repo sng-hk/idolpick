@@ -53,15 +53,15 @@ npm run dev
 
 **Frontend**
 
-* React (Vite)
-* Tailwind CSS
+* React
+* CSS
 * GitHub OAuth
 
 **Backend**
 
 * Java 17, Spring Boot 3.x
 * Spring Security + JWT
-* Spring Data JDBC (or JPA)
+* Spring Data JDBC
 * MySQL (AWS RDS)
 
 **DevOps / Infra**
