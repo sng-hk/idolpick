@@ -1,5 +1,6 @@
 package com.example.idolpick.repository;
 
+import com.example.idolpick.dto.GoodsResponseDto;
 import com.example.idolpick.entity.Product;
 import com.example.idolpick.repository.rowmapper.ProductRowMapper;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +84,37 @@ public class ProductRepository {
                 product.getAvailableFrom(),
                 product.getId(),
                 product.getCreatedBy()
+        );
+    }
+
+    // 특정 아이돌 상품만 찾기
+    public List<GoodsResponseDto> findAllByIdolId(Long idolId) {
+        String sql = """
+                SELECT p.id,
+                       p.name,
+                       p.category_id, 
+                       c.name as category_name,
+                       p.price, 
+                       p.stock,
+                       p.description, 
+                       p.thumbnail_url, 
+                       p.view_count 
+                       FROM product p       
+                       LEFT JOIN category c ON p.category_id = c.id
+                       WHERE p.idol_id = ?
+                """;
+        return jdbcTemplate.query(sql, new Object[]{idolId}, (rs, rowNum) ->
+                new GoodsResponseDto(
+                        rs.getLong("id"),
+                        rs.getString("name"),
+                        rs.getLong("category_id"),
+                        rs.getString("category_name"),
+                        rs.getInt("price"),
+                        rs.getInt("stock"),
+                        rs.getString("description"),
+                        rs.getString("thumbnail_url"),
+                        rs.getInt("view_count")
+                )
         );
     }
 }
