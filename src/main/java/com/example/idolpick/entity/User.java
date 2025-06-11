@@ -22,14 +22,16 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UserRole role; // Enum
+    private Long idolId;
 
     // 회원가입용 생성자
-    public User(String email, String nickname, String phoneNumber, LocalDate birthDate, UserRole role) {
+    public User(String email, String nickname, String phoneNumber, LocalDate birthDate, UserRole role, Long idolId) {
         this.email = email;
         this.nickname = nickname;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.role = role;
+        this.idolId = idolId;
     }
 }
 

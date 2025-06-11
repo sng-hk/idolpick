@@ -89,3 +89,11 @@ FROM
         i.id = il.idol_id AND il.user_id = 14
 ORDER BY
     i.id;
+
+ALTER TABLE product ADD COLUMN idol_id BIGINT;
+ALTER TABLE product ADD CONSTRAINT fk_product_idol
+    FOREIGN KEY (idol_id) REFERENCES idol(id);
+
+ALTER TABLE user ADD COLUMN idol_id BIGINT;
+ALTER TABLE user ADD CONSTRAINT fk_user_idol
+    FOREIGN KEY (idol_id) REFERENCES idol(id);

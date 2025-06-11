@@ -36,16 +36,7 @@ public class ProductController {
         Map<String, Object> userInfo = (Map<String, Object>) authentication.getPrincipal();
         String email = (String) userInfo.get("email");
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
-        Product product = Product.builder()
-                .name(request.getName())
-                .categoryId(request.getCategoryId())
-                .price(request.getPrice())
-                .stock(request.getStock())
-                .description(request.getDescription())
-                .thumbnailUrl(request.getThumbnailUrl())
-                .availableFrom(request.getAvailableFrom())
-                .createdBy(user.getId())  // 보통은 SecurityContextHolder에서 유저 정보 꺼냄
-                .build();
+        Product product = request.toEntity(user.getId());
         productRepository.save(product);
     }
 

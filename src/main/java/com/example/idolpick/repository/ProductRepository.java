@@ -1,6 +1,5 @@
 package com.example.idolpick.repository;
 
-import com.example.idolpick.entity.Category;
 import com.example.idolpick.entity.Product;
 import com.example.idolpick.repository.rowmapper.ProductRowMapper;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +35,7 @@ public class ProductRepository {
         jdbcTemplate.update(sql, id);
     }
 
+    // ROLE_ADMIN 전용
     public Optional<List<Product>> findAll() {
         String sql = "SELECT * FROM product ORDER BY created_at DESC";
         return Optional.ofNullable(jdbcTemplate.query(sql, rowMapper));
@@ -43,11 +43,12 @@ public class ProductRepository {
 
     public void save(Product product) {
         String sql = """
-            INSERT INTO product (name, category_id, price, stock, description, thumbnail_url, view_count, available_from, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO product (name, idol_id, category_id, price, stock, description, thumbnail_url, view_count, available_from, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """;
         jdbcTemplate.update(sql,
                 product.getName(),
+                product.getIdolId(),
                 product.getCategoryId(),
                 product.getPrice(),
                 product.getStock(),

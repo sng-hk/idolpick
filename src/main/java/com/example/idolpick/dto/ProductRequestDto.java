@@ -20,8 +20,9 @@ public class ProductRequestDto {
     private LocalDateTime availableFrom;
     private Long createdBy;  // 로그인 정보에서 꺼내는 게 보통이긴 함
 
-    public Product toEntity() {
+    public Product toEntity(Long userId) {
         return Product.builder()
+                .idolId(userId)
                 .name(this.name)
                 .categoryId(this.categoryId)
                 .price(this.price)
@@ -29,7 +30,7 @@ public class ProductRequestDto {
                 .description(this.description)
                 .thumbnailUrl(this.thumbnailUrl)
                 .availableFrom(this.availableFrom)
-                .createdBy(this.createdBy)
+                .createdBy(userId)
                 .build();
     }
 }

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Product {
     private Long id;
+    private Long idolId;
     private String name;
     private Long categoryId;
     private Integer price;
