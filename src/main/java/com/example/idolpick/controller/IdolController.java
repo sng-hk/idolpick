@@ -1,5 +1,6 @@
 package com.example.idolpick.controller;
 
+import com.example.idolpick.dto.IdolWithLikeResponseDto;
 import com.example.idolpick.entity.Idol;
 import com.example.idolpick.entity.User;
 import com.example.idolpick.repository.IdolRepository;
@@ -20,13 +21,28 @@ public class IdolController {
     private final IdolRepository idolRepository;
     private final UserRepository userRepository;
 
+//    @GetMapping
+//    public ResponseEntity<List<Idol>> getIdols(@RequestParam(required = false) String name) {
+//        // ✅ 전체 아이돌 리스트 조회
+//        if (name != null && !name.isBlank()) { // 아이돌 이름 검색
+//            return ResponseEntity.ok(idolRepository.findByNameLike(name));
+//        }
+//        return ResponseEntity.ok(idolRepository.findAll());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<Idol>> getIdols(@RequestParam(required = false) String name) {
-        // ✅ 전체 아이돌 리스트 조회
+    public ResponseEntity<List<IdolWithLikeResponseDto>> getIdols(@RequestParam(required = false) String name, Authentication authentication) { // 아이돌 리스트 조회
+        Map<String, Object> userInfo = (Map<String, Object>) authentication.getPrincipal();
+        String email = (String) userInfo.get("email");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다.")); // 회원 정보 찾기
+        List<IdolWithLikeResponseDto> idols;
         if (name != null && !name.isBlank()) { // 아이돌 이름 검색
-            return ResponseEntity.ok(idolRepository.findByNameLike(name));
+            idols = idolRepository.findAllWithLike(user.getId(), name);
         }
-        return ResponseEntity.ok(idolRepository.findAll());
+        else {
+         idols = idolRepository.findAllWithLike(user.getId());
+        }
+        return ResponseEntity.ok(idols);
     }
 
     @PostMapping("/like/{id}")

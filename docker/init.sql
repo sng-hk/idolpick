@@ -70,3 +70,22 @@ INSERT INTO user (email, nickname, phone_number, birth_date)
 VALUES
     ('test1@example.com', '테스터1', '010-1111-2222', '2000-01-01'),
     ('test2@example.com', '테스터2', '010-3333-4444', '1999-12-31');
+
+
+-- 특정 사용자의 모든 아이돌에 대한 like 조회
+SELECT
+    i.id,
+    i.name,
+    i.description,
+    i.image_url,
+    il.user_id,
+    il.idol_id,
+    CASE WHEN il.user_id IS NOT NULL THEN true ELSE false END AS liked
+FROM
+    idol i
+        LEFT JOIN
+    idol_like il
+    ON
+        i.id = il.idol_id AND il.user_id = 14
+ORDER BY
+    i.id;
