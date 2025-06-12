@@ -22,10 +22,48 @@ public class ProductRepository {
         return jdbcTemplate.query(sql, new Object[]{userId}, rowMapper);
     }
 
+
     public Optional<Product> findById(Long id) {
         String sql = "SELECT * FROM product WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{id}, rowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public Optional<GoodsResponseDto> findGoodsById(Long id) {
+        String increaseViewCountSql = "UPDATE product SET view_count = view_count + 1 WHERE id = ?";
+        jdbcTemplate.update(increaseViewCountSql, id);
+
+        String sql = """
+                SELECT p.id,
+                       p.name,
+                       p.category_id, 
+                       c.name as category_name,
+                       p.price, 
+                       p.stock,
+                       p.description, 
+                       p.thumbnail_url, 
+                       p.view_count 
+                       FROM product p       
+                       LEFT JOIN category c ON p.category_id = c.id
+                       WHERE p.id = ?
+                """;
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) ->
+                    new GoodsResponseDto(
+                            rs.getLong("id"),
+                            rs.getString("name"),
+                            rs.getLong("category_id"),
+                            rs.getString("category_name"),
+                            rs.getInt("price"),
+                            rs.getInt("stock"),
+                            rs.getString("description"),
+                            rs.getString("thumbnail_url"),
+                            rs.getInt("view_count")
+                    )
+            ));
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
