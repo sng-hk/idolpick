@@ -43,7 +43,8 @@ public class CartRepository {
     }
 
     public void updateCart(Long user_id, Long product_id, Integer quantity) {
-
+        String sql = "UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
+        jdbcTemplate.update(sql, quantity, user_id, product_id);
     }
 
     public void addCart(Long user_id, Long product_id, Integer quantity) {
@@ -55,7 +56,6 @@ public class CartRepository {
                 VALUES (?, ?, ?)              
                 ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity) 
                 """;
-
         jdbcTemplate.update(sql, user_id, product_id, quantity);
     }
 }

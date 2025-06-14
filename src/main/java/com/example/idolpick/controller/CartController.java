@@ -3,6 +3,7 @@ package com.example.idolpick.controller;
 import com.example.idolpick.dto.CartItemResponseDto;
 import com.example.idolpick.dto.CartRequestDto;
 import com.example.idolpick.dto.CartResponseDto;
+import com.example.idolpick.dto.CartUpdateRequestDto;
 import com.example.idolpick.entity.User;
 import com.example.idolpick.repository.CartRepository;
 import com.example.idolpick.repository.UserRepository;
@@ -39,5 +40,21 @@ public class CartController {
         List<CartItemResponseDto> cartItemResponseDto = cartRepository.showCart(user.getId());
         CartResponseDto cartResponseDto = new CartResponseDto(cartItemResponseDto);
         return ResponseEntity.status(HttpStatus.OK).body(cartResponseDto);
+    }
+
+    @DeleteMapping
+    public void deleteCart(Authentication authentication, @RequestBody Long productId) {
+        Map<String, Object> userInfo = (Map<String, Object>) authentication.getPrincipal();
+        String email = (String) userInfo.get("email");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+        cartRepository.deleteCart(user.getId(), productId);
+    }
+
+    @PutMapping
+    public void updateCart(Authentication authentication, @RequestBody CartUpdateRequestDto request) {
+        Map<String, Object> userInfo = (Map<String, Object>) authentication.getPrincipal();
+        String email = (String) userInfo.get("email");
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+        cartRepository.updateCart(user.getId(), request.getProductId(), request.getQuantity());
     }
 }
