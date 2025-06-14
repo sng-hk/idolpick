@@ -161,3 +161,15 @@ VALUES
     ('MD15 굿즈8', 2, 17000, 20, '굿즈 설명입니다.', 'https://example.com/thumb8.jpg', 0, NOW(), 15, 1),
     ('MD15 굿즈9', 3, 14000, 15, '굿즈 설명입니다.', 'https://example.com/thumb9.jpg', 0, NOW(), 15, 1),
     ('MD15 굿즈10', 1, 18000, 10, '굿즈 설명입니다.', 'https://example.com/thumb10.jpg', 0, NOW(), 15, 1);
+
+create table cart (
+    id bigint not null primary key auto_increment,
+    user_id bigint not null,
+    product_id bigint not null,
+    quantity int not null,
+    created_at datetime default current_timestamp,
+    updated_at datetime default current_timestamp on update current_timestamp,
+    foreign key (user_id) references user(id),
+    foreign key (product_id) references product(id),
+    UNIQUE KEY (user_id, product_id)
+)
