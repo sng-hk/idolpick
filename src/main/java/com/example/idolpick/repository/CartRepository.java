@@ -12,7 +12,7 @@ import java.util.List;
 public class CartRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public CartItemResponseDto showCart(Long user_id) {
+    public List<CartItemResponseDto> showCart(Long user_id) {
         String sql = """
                 SELECT
                     c.product_id,
@@ -23,16 +23,18 @@ public class CartRepository {
                     (p.price * c.quantity) as total
                 FROM cart c
                 JOIN product p ON c.product_id = p.id
-                WHERE c.user_id = 14;
+                WHERE c.user_id = ?;
                 """;
 
-        List<CartItemResponseDto> result = jdbcTemplate.query(sql, (rs, rowNum) -> new CartItemResponseDto(
+        List<CartItemResponseDto> result = jdbcTemplate.query(sql, new Object[]{user_id}, (rs, rowNum) -> new CartItemResponseDto(
                 rs.getLong("product_id"),
                 rs.getString("name"),
                 rs.getInt("price"),
                 rs.getInt("quantity"),
                 rs.getInt("total")
         ));
+
+        return result;
     }
 
     public void deleteCart(Long user_id, Long product_id) {
