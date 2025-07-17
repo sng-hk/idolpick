@@ -1,28 +1,19 @@
 package com.example.idolpick.config;
-import com.example.idolpick.repository.UserRepository;
-import com.example.idolpick.security.handler.OAuth2AuthenticationSuccessHandler;
-import com.example.idolpick.security.jwt.JwtAuthenticationFilter;
-import com.example.idolpick.security.jwt.JwtUtil;
+import com.example.idolpick.user.repository.UserRepository;
+import com.example.idolpick.auth.security.handler.OAuth2AuthenticationSuccessHandler;
+import com.example.idolpick.auth.security.jwt.JwtAuthenticationFilter;
+import com.example.idolpick.auth.security.jwt.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity

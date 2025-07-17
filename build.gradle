@@ -15,6 +15,8 @@ java {
 
 repositories {
 	mavenCentral()
+
+	maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -22,6 +24,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	implementation 'com.github.iamport:iamport-rest-client-java:0.2.23'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -35,6 +39,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 
 
 }
