@@ -155,4 +155,13 @@ public class ProductRepository {
                 )
         );
     }
+
+    public void decreaseStock(Long productId, int quantity) {
+        String sql = "UPDATE product SET stock = stock - ? WHERE id = ? AND stock >= ?";
+        int updated = jdbcTemplate.update(sql, quantity, productId, quantity);
+
+        if (updated == 0) {
+            throw new IllegalStateException("재고 부족 또는 상품 없음: productId=" + productId);
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.idolpick.payment.controller;
 
+import com.example.idolpick.order.service.OrderService;
 import com.example.idolpick.payment.dto.PaymentVerifyResponseDto;
 import com.example.idolpick.order.entity.Order;
 import com.example.idolpick.payment.dto.PaymentVerifyRequestDto;
@@ -33,6 +34,7 @@ public class PaymentController {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final OrderService orderService;
 
     @PostMapping("/verify")
     public ResponseEntity<PaymentVerifyResponseDto> verifyPayment(
@@ -68,6 +70,9 @@ public class PaymentController {
                         .atZone(ZoneId.systemDefault())
                         .toLocalDateTime()
                 ));
+
+                // 6. 상품 재고 감소
+                orderService.updateProductStock(order.getId());
 
                 return ResponseEntity.ok(PaymentVerifyResponseDto.success("결제 검증 성공"));
 
