@@ -23,6 +23,10 @@ import java.util.*;
 public class OrderRepository {
     private final JdbcTemplate jdbcTemplate;
 
+    public void updateTotalAmount(Long orderId, int totalAmount) {
+        String sql = "UPDATE orders SET total_amount = ? WHERE id = ?";
+        jdbcTemplate.update(sql, totalAmount, orderId);
+    }
 
     public Order updateOrderStatus(String merchantUid, String status) {
         String sql = "UPDATE orders SET status = ? WHERE merchant_uid = ?";
@@ -48,7 +52,7 @@ public class OrderRepository {
         return keyHolder.getKey().longValue();  // 주문 ID 반환
     }
 
-    public void insertOrderItems(Long orderId, List<OrderItem> items) {
+    public void insertOrderItems(List<OrderItem> items) {
         String sql = "INSERT INTO order_item " +
                 "(order_id, product_id, quantity, price_at_order) " +
                 "VALUES (?, ?, ?, ?)";
@@ -56,7 +60,7 @@ public class OrderRepository {
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 OrderItem item = items.get(i);
-                ps.setLong(1, orderId);
+                ps.setLong(1, item.getOrderId());
                 ps.setLong(2, item.getProductId());
                 ps.setInt(3, item.getQuantity());
                 ps.setInt(4, item.getPrice());
@@ -79,7 +83,7 @@ public class OrderRepository {
 
     public List<OrderDto.OrderReadResponseDto> findOrdersByUser(Long userId) {
         String sql = """
-        SELECT o.id as order_id, o.status, o.total_amount, o.created_at as order_created_at,
+        SELECT o.id as order_id, o.merchant_uid, o.status, o.total_amount, o.created_at as order_created_at,
                oi.quantity, oi.price_at_order,
                p.id as product_id, p.name as product_name, p.thumbnail_url
         FROM orders o
@@ -98,6 +102,7 @@ public class OrderRepository {
                     try {
                         OrderDto.OrderReadResponseDto dto = new OrderDto.OrderReadResponseDto();
                         dto.setOrderId(id);
+                        dto.setMerchantUid(rs.getString("merchant_uid"));
                         dto.setStatus(PaymentStatus.valueOf(rs.getString("status")));
                         dto.setTotalAmount(rs.getInt("total_amount"));
                         dto.setCreatedAt(rs.getTimestamp("order_created_at").toLocalDateTime());
